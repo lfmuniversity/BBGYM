@@ -5,14 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BBGYM</title>
   <meta name="theme-color" content="#0d0e11" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="BBGYM" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-
   <style>
     :root {
       --bg: #eef0f4;
@@ -434,17 +426,24 @@
       .subtitle { font-size: 16px; }
     }
   </style>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="BBGYM" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
 </head>
 <body>
   <div class="app">
     <header>
       <div class="brand-row">
-        <div class="logo"><img src="icon-1024.png" alt="BBGYM logo"></div>
+        <div class="logo"><img src="./icon-1024.png" alt="BBGYM logo"></div>
         <div class="today-pill" id="todayPill">Oggi</div>
       </div>
 
       <h1>BBGYM</h1>
-      <div class="subtitle">La tua app personale per i carichi. 4 serie per esercizio, kg e reps sempre pronti alla prossima sessione.</div>
+      <div class="subtitle">Total body con 4 serie per esercizio. Aggiorna kg e reps, salva e ritrovi tutto pronto alla prossima sessione.</div>
     </header>
 
     <div class="topbar">
@@ -500,8 +499,8 @@
       "Alzate Laterali ai Manubri"
     ];
 
-    const STORAGE_CURRENT = "bbgymCurrent_4sets_v1";
-    const STORAGE_HISTORY = "bbgymHistory_4sets_v1";
+    const STORAGE_CURRENT = "bbgymCurrent_v1";
+    const STORAGE_HISTORY = "bbgymHistory_v1";
 
     const $ = (id) => document.getElementById(id);
 
