@@ -4,7 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BBGYM</title>
-  <meta name="theme-color" content="#eef0f4" />
+  <meta name="theme-color" content="#0d0e11" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="BBGYM" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
   <style>
     :root {
       --bg: #eef0f4;
@@ -88,16 +96,21 @@
     }
 
     .logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 17px;
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
       display: grid;
       place-items: center;
-      background: var(--accent);
-      color: var(--bg);
-      font-weight: 950;
-      letter-spacing: -0.08em;
+      overflow: hidden;
+      background: #050506;
       box-shadow: var(--shadow-soft);
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .today-pill {
@@ -426,12 +439,12 @@
   <div class="app">
     <header>
       <div class="brand-row">
-        <div class="logo">BB</div>
+        <div class="logo"><img src="icon-1024.png" alt="BBGYM logo"></div>
         <div class="today-pill" id="todayPill">Oggi</div>
       </div>
 
       <h1>BBGYM</h1>
-      <div class="subtitle">Total body con 4 serie per esercizio. Aggiorna kg e reps, salva e ritrovi tutto pronto alla prossima sessione.</div>
+      <div class="subtitle">La tua app personale per i carichi. 4 serie per esercizio, kg e reps sempre pronti alla prossima sessione.</div>
     </header>
 
     <div class="topbar">
