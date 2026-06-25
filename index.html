@@ -47,9 +47,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html {
-      background: var(--bg);
-    }
+    html { background: var(--bg); }
 
     body {
       margin: 0;
@@ -73,13 +71,12 @@
     }
 
     .app {
-      max-width: 820px;
+      max-width: 860px;
       margin: 0 auto;
     }
 
     header {
       padding: 22px 2px 14px;
-      position: relative;
     }
 
     .brand-row {
@@ -127,7 +124,7 @@
       font-size: 17px;
       margin-top: 14px;
       line-height: 1.35;
-      max-width: 540px;
+      max-width: 560px;
     }
 
     .topbar {
@@ -182,7 +179,7 @@
 
     .list {
       display: grid;
-      gap: 11px;
+      gap: 12px;
       padding-bottom: 10px;
     }
 
@@ -211,10 +208,10 @@
 
     .exercise-title {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto 1fr;
       gap: 10px;
       align-items: center;
-      margin-bottom: 13px;
+      margin-bottom: 9px;
       padding-left: 4px;
     }
 
@@ -238,27 +235,45 @@
     }
 
     .last {
+      margin: 0 0 13px 44px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 750;
-      white-space: nowrap;
-      background: rgba(127,127,127,0.10);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 7px 9px;
+      line-height: 1.35;
     }
 
-    .fields {
+    .sets {
       display: grid;
-      grid-template-columns: 1.1fr 1fr 1fr;
       gap: 8px;
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 42px 1fr 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .set-label {
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(127,127,127,0.09);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 950;
+      font-size: 13px;
     }
 
     .field {
       background: rgba(127,127,127,0.075);
       border: 1px solid var(--line);
-      border-radius: 19px;
-      padding: 8px;
+      border-radius: 18px;
+      padding: 7px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      gap: 4px;
     }
 
     label {
@@ -268,7 +283,6 @@
       font-weight: 900;
       letter-spacing: .04em;
       text-transform: uppercase;
-      margin-bottom: 5px;
       text-align: center;
     }
 
@@ -277,9 +291,9 @@
       border: 0;
       background: transparent;
       color: var(--text);
-      border-radius: 14px;
-      padding: 7px 4px 8px;
-      font-size: 24px;
+      border-radius: 13px;
+      padding: 6px 2px 7px;
+      font-size: 23px;
       font-weight: 950;
       letter-spacing: -0.045em;
       outline: none;
@@ -398,15 +412,11 @@
       .stat { padding: 14px; border-radius: 21px; }
       .stat .value { font-size: 24px; }
       .exercise { padding: 13px; border-radius: 26px; }
-      .exercise-title { grid-template-columns: auto 1fr; }
-      .last {
-        grid-column: 1 / -1;
-        justify-self: start;
-        margin-left: 40px;
-      }
-      .fields { gap: 7px; }
-      .field { padding: 7px 5px; border-radius: 17px; }
-      input { font-size: 22px; }
+      .last { margin-left: 40px; }
+      .set-row { grid-template-columns: 36px 1fr 1fr; gap: 7px; }
+      .set-label { border-radius: 16px; }
+      .field { grid-template-columns: 34px 1fr; padding: 6px 4px; border-radius: 16px; }
+      input { font-size: 21px; }
       h1 { font-size: 48px; }
       .subtitle { font-size: 16px; }
     }
@@ -421,7 +431,7 @@
       </div>
 
       <h1>BBGYM</h1>
-      <div class="subtitle">La tua scheda total body sempre pronta. Aggiorna i carichi, salva e riparti dalla prossima sessione.</div>
+      <div class="subtitle">Total body con 4 serie per esercizio. Aggiorna kg e reps, salva e ritrovi tutto pronto alla prossima sessione.</div>
     </header>
 
     <div class="topbar">
@@ -437,7 +447,7 @@
 
     <div class="section-title">
       <strong>Total body</strong>
-      <span>kg · reps · serie</span>
+      <span>4 serie · kg/reps</span>
     </div>
 
     <main class="list" id="exerciseList"></main>
@@ -477,10 +487,14 @@
       "Alzate Laterali ai Manubri"
     ];
 
-    const STORAGE_CURRENT = "bbgymCurrent_v1";
-    const STORAGE_HISTORY = "bbgymHistory_v1";
+    const STORAGE_CURRENT = "bbgymCurrent_4sets_v1";
+    const STORAGE_HISTORY = "bbgymHistory_4sets_v1";
 
     const $ = (id) => document.getElementById(id);
+
+    function emptySets() {
+      return Array.from({ length: 4 }, () => ({ kg: "", reps: "" }));
+    }
 
     function todayLabel(date = new Date()) {
       return date.toLocaleDateString("it-IT", { day: "2-digit", month: "short" });
@@ -505,6 +519,13 @@
       localStorage.setItem(STORAGE_CURRENT, JSON.stringify(data));
     }
 
+    function compactSets(sets) {
+      const filled = sets
+        .map((s, i) => s.kg || s.reps ? `S${i + 1} ${s.kg || "—"}×${s.reps || "—"}` : "")
+        .filter(Boolean);
+      return filled.length ? filled.join(" · ") : "mai salvato";
+    }
+
     function render() {
       const current = loadCurrent();
       $("exerciseCount").textContent = exercises.length;
@@ -516,31 +537,29 @@
       $("lastSave").textContent = lastSave;
 
       $("exerciseList").innerHTML = exercises.map((name, index) => {
-        const item = current[name] || {};
-        const lastText = item.kg || item.reps || item.sets
-          ? `${item.kg || "—"} kg · ${item.reps || "—"} reps · ${item.sets || "—"} serie`
-          : "mai salvato";
+        const sets = current[name]?.sets || emptySets();
 
         return `
           <section class="exercise">
             <div class="exercise-title">
               <div class="num">${index + 1}</div>
               <h2>${name}</h2>
-              <div class="last">${lastText}</div>
             </div>
-            <div class="fields">
-              <div class="field">
-                <label>KG</label>
-                <input inputmode="decimal" data-name="${name}" data-field="kg" value="${item.kg || ""}" placeholder="0">
-              </div>
-              <div class="field">
-                <label>Reps</label>
-                <input inputmode="numeric" data-name="${name}" data-field="reps" value="${item.reps || ""}" placeholder="0">
-              </div>
-              <div class="field">
-                <label>Serie</label>
-                <input inputmode="numeric" data-name="${name}" data-field="sets" value="${item.sets || ""}" placeholder="0">
-              </div>
+            <div class="last">${compactSets(sets)}</div>
+            <div class="sets">
+              ${sets.map((set, setIndex) => `
+                <div class="set-row">
+                  <div class="set-label">S${setIndex + 1}</div>
+                  <div class="field">
+                    <label>KG</label>
+                    <input inputmode="decimal" data-name="${name}" data-set="${setIndex}" data-field="kg" value="${set.kg || ""}" placeholder="0">
+                  </div>
+                  <div class="field">
+                    <label>Reps</label>
+                    <input inputmode="numeric" data-name="${name}" data-set="${setIndex}" data-field="reps" value="${set.reps || ""}" placeholder="0">
+                  </div>
+                </div>
+              `).join("")}
             </div>
           </section>
         `;
@@ -551,12 +570,18 @@
 
     function collectForm() {
       const current = loadCurrent();
+
+      exercises.forEach(name => {
+        current[name] = { sets: emptySets() };
+      });
+
       document.querySelectorAll("input").forEach(input => {
         const name = input.dataset.name;
+        const setIndex = Number(input.dataset.set);
         const field = input.dataset.field;
-        if (!current[name]) current[name] = {};
-        current[name][field] = input.value.trim();
+        current[name].sets[setIndex][field] = input.value.trim();
       });
+
       current.__lastSave = new Date().toISOString();
       return current;
     }
@@ -569,7 +594,7 @@
       const snapshot = {
         date: new Date().toISOString(),
         data: exercises.reduce((acc, name) => {
-          acc[name] = current[name] || {};
+          acc[name] = current[name] || { sets: emptySets() };
           return acc;
         }, {})
       };
@@ -604,9 +629,10 @@
 
       $("history").innerHTML = history.slice(0, 10).map(session => {
         const rows = exercises.map(name => {
-          const item = session.data[name] || {};
-          if (!item.kg && !item.reps && !item.sets) return "";
-          return `${name}: ${item.kg || "—"} kg · ${item.reps || "—"} reps · ${item.sets || "—"} serie`;
+          const sets = session.data[name]?.sets || emptySets();
+          const line = compactSets(sets);
+          if (line === "mai salvato") return "";
+          return `${name}: ${line}`;
         }).filter(Boolean).join("<br>");
 
         return `
